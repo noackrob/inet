@@ -15,7 +15,7 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "inet/common/ISocketControlInfo.h"
+#include "inet/applications/common/SocketTag_m.h"
 #include "inet/common/MessageDispatcher.h"
 #include "inet/common/ProtocolTag_m.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"
@@ -36,10 +36,16 @@ void MessageDispatcher::initialize()
     WATCH_MAP(protocolIdToLowerLayerGateIndex);
 }
 
-int MessageDispatcher::computeSocketId(cMessage *message)
+int MessageDispatcher::computeSocketReqSocketId(cMessage *message)
 {
-    ISocketControlInfo *controlInfo = dynamic_cast<ISocketControlInfo *>(message->getControlInfo());
-    return controlInfo != nullptr ? controlInfo->getSocketId() : -1;
+    auto *socketReq = message->getTag<SocketReq>();
+    return socketReq != nullptr ? socketReq->getSocketId() : -1;
+}
+
+int MessageDispatcher::computeSocketIndSocketId(cMessage *message)
+{
+    auto *socketInd = message->getTag<SocketInd>();
+    return socketInd != nullptr ? socketInd->getSocketId() : -1;
 }
 
 int MessageDispatcher::computeInterfaceId(cMessage *message)
@@ -104,7 +110,7 @@ cGate *MessageDispatcher::handleUpperLayerPacket(cMessage *message, cGate *inGat
 
 cGate *MessageDispatcher::handleLowerLayerPacket(cMessage *message, cGate *inGate)
 {
-    int socketId = computeSocketId(message);
+    int socketId = computeSocketIndSocketId(message);
     int protocolId = computeProtocolId(message);
     if (socketId != -1) {
         auto it = socketIdToUpperLayerGateIndex.find(socketId);
@@ -126,7 +132,7 @@ cGate *MessageDispatcher::handleLowerLayerPacket(cMessage *message, cGate *inGat
 
 cGate *MessageDispatcher::handleUpperLayerCommand(cMessage *message, cGate *inGate)
 {
-    int socketId = computeSocketId(message);
+    int socketId = computeSocketReqSocketId(message);
     int interfaceId = computeInterfaceId(message);
     int protocolId = computeProtocolId(message);
     if (socketId != -1) {
@@ -156,7 +162,7 @@ cGate *MessageDispatcher::handleUpperLayerCommand(cMessage *message, cGate *inGa
 
 cGate *MessageDispatcher::handleLowerLayerCommand(cMessage *message, cGate *inGate)
 {
-    int socketId = computeSocketId(message);
+    int socketId = computeSocketIndSocketId(message);
     int protocolId = computeProtocolId(message);
     if (socketId != -1) {
         auto it = socketIdToUpperLayerGateIndex.find(socketId);
