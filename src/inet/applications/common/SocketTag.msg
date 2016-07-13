@@ -12,7 +12,7 @@ class TagBase extends cObject;
 
 class SocketTag extends TagBase
 {
-    int socketId; // a locally unique (network node) identifier that determines the application socket
+    int socketId = -1; // a locally unique (network node) identifier that determines the application socket
 }
 
 //
