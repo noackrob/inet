@@ -19,6 +19,7 @@
 
 #include "inet/common/IProtocolRegistrationListener.h"
 #include "inet/routing/gpsr/GPSR.h"
+#include "inet/networklayer/common/HopLimitTag_m.h"
 #include "inet/networklayer/common/IPProtocolId_m.h"
 #include "inet/networklayer/common/L3AddressTag_m.h"
 #include "inet/common/INETUtils.h"
@@ -229,7 +230,6 @@ void GPSR::sendBeacon(GPSRBeacon *beacon, double delay)
     EV_INFO << "Sending beacon: address = " << beacon->getAddress() << ", position = " << beacon->getPosition() << endl;
     INetworkProtocolControlInfo *networkProtocolControlInfo = addressType->createNetworkProtocolControlInfo();
     networkProtocolControlInfo->setTransportProtocol(IP_PROT_MANET);
-    networkProtocolControlInfo->setHopLimit(255);
     UDPPacket *udpPacket = new UDPPacket(beacon->getName());
     udpPacket->encapsulate(beacon);
     udpPacket->setSourcePort(GPSR_UDP_PORT);
@@ -238,6 +238,7 @@ void GPSR::sendBeacon(GPSRBeacon *beacon, double delay)
     auto addresses = udpPacket->ensureTag<L3AddressReq>();
     addresses->setSource(getSelfAddress());
     addresses->setDestination(addressType->getLinkLocalManetRoutersMulticastAddress());
+    udpPacket->ensureTag<HopLimitReq>()->setHopLimit(255);
     sendUDPPacket(udpPacket, delay);
 }
 

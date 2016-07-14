@@ -26,6 +26,7 @@
 
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/ProtocolTag_m.h"
+#include "inet/networklayer/common/HopLimitTag_m.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
 #include "inet/networklayer/common/L3AddressTag_m.h"
 #include "inet/networklayer/contract/IInterfaceTable.h"
@@ -645,11 +646,11 @@ void xMIPv6::sendMobilityMessageToIPv6Module(cMessage *msg, const IPv6Address& d
     EV_INFO << "Appending ControlInfo to mobility message\n";
     IPv6ControlInfo *controlInfo = new IPv6ControlInfo();
     controlInfo->setProtocol(IP_PROT_IPv6EXT_MOB);    // specifies the next header value for the Mobility Header (=135)
-    controlInfo->setHopLimit(255);
     msg->removeTag<ProtocolReq>();         // send to NIC
     msg->ensureTag<InterfaceReq>()->setInterfaceId(interfaceId);
     msg->ensureTag<L3AddressReq>()->setSource(srcAddr);
     msg->ensureTag<L3AddressReq>()->setDestination(destAddr);
+    msg->ensureTag<HopLimitReq>()->setHopLimit(255);
     EV_INFO << "ControlInfo appended successfully. Sending mobility message to IPv6 module\n";
 
     EV_DETAIL << "controlInfo: DestAddr=" << destAddr

@@ -16,15 +16,12 @@
 //
 
 cplusplus {{
-#include "inet/networklayer/common/L3Address.h"
 #include "inet/networklayer/common/IPProtocolId_m.h"
 }}
 
 namespace inet;
 
 enum IPProtocolId;
-
-class noncobject L3Address;
 
 //
 // Control information for sending/receiving packets over the generic network protocol.
@@ -33,6 +30,5 @@ class GenericNetworkProtocolControlInfo  //TODO rename!!!!
 {
     @customize(true);
     short protocol @enum(IPProtocolId);  // encapsulated protocol
-    short hopLimit;     // maximum hop count
 }
 

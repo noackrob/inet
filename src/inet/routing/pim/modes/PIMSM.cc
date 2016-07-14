@@ -22,6 +22,7 @@
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/NotifierConsts.h"
 #include "inet/common/ProtocolTag_m.h"
+#include "inet/networklayer/common/HopLimitTag_m.h"
 #include "inet/networklayer/common/L3AddressTag_m.h"
 #include "inet/networklayer/contract/ipv4/IPv4ControlInfo.h"
 #include "inet/networklayer/ipv4/IPv4Datagram.h"
@@ -1545,13 +1546,13 @@ void PIMSM::sendToIP(PIMPacket *packet, IPv4Address srcAddr, IPv4Address destAdd
 {
     IPv4ControlInfo *ctrl = new IPv4ControlInfo();
     ctrl->setProtocol(IP_PROT_PIM);
-    ctrl->setTimeToLive(ttl);
     packet->setControlInfo(ctrl);
     packet->ensureTag<ProtocolInd>()->setProtocol(&Protocol::pim);
     packet->ensureTag<ProtocolReq>()->setProtocol(&Protocol::ipv4);
     packet->ensureTag<InterfaceReq>()->setInterfaceId(outInterfaceId);
     packet->ensureTag<L3AddressReq>()->setSource(srcAddr);
     packet->ensureTag<L3AddressReq>()->setDestination(destAddr);
+    packet->ensureTag<HopLimitReq>()->setHopLimit(ttl);
     send(packet, "ipOut");
 }
 
@@ -1571,12 +1572,12 @@ void PIMSM::forwardMulticastData(IPv4Datagram *datagram, int outInterfaceId)
 
     // set control info
     IPv4ControlInfo *ctrl = new IPv4ControlInfo();
-    ctrl->setTimeToLive(MAX_TTL - 2);    //one minus for source DR router and one for RP router // XXX specification???
     ctrl->setProtocol(datagram->getTransportProtocol());
     data->setControlInfo(ctrl);
     data->ensureTag<InterfaceReq>()->setInterfaceId(outInterfaceId);
     // XXX data->ensureTag<L3AddressReq>()->setSource(datagram->getSrcAddress()); // FIXME IP won't accept if the source is non-local
     data->ensureTag<L3AddressReq>()->setDestination(datagram->getDestAddress());
+    data->ensureTag<HopLimitReq>()->setHopLimit(MAX_TTL - 2);    //one minus for source DR router and one for RP router // XXX specification???
     send(data, "ipOut");
 }
 

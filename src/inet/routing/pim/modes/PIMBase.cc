@@ -23,6 +23,7 @@
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/ProtocolTag_m.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"
+#include "inet/networklayer/common/HopLimitTag_m.h"
 #include "inet/networklayer/common/InterfaceTable.h"
 #include "inet/networklayer/common/L3AddressTag_m.h"
 #include "inet/networklayer/contract/ipv4/IPv4Address.h"
@@ -177,13 +178,13 @@ void PIMBase::sendHelloPacket(PIMInterface *pimInterface)
 
     IPv4ControlInfo *ctrl = new IPv4ControlInfo();
     ctrl->setProtocol(IP_PROT_PIM);
-    ctrl->setTimeToLive(1);
     msg->setControlInfo(ctrl);
     msg->setByteLength(byteLength);
     msg->ensureTag<InterfaceReq>()->setInterfaceId(pimInterface->getInterfaceId());
     msg->ensureTag<ProtocolInd>()->setProtocol(&Protocol::pim);
     msg->ensureTag<ProtocolReq>()->setProtocol(&Protocol::ipv4);
     msg->ensureTag<L3AddressReq>()->setDestination(ALL_PIM_ROUTERS_MCAST);
+    msg->ensureTag<HopLimitReq>()->setHopLimit(1);
 
     emit(sentHelloPkSignal, msg);
 

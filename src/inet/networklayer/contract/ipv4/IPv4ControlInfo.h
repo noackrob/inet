@@ -75,8 +75,6 @@ class INET_API IPv4ControlInfo : public IPv4ControlInfo_Base, public INetworkPro
 
     virtual short getTransportProtocol() const override { return IPv4ControlInfo_Base::getProtocol(); }
     virtual void setTransportProtocol(short protocol) override { IPv4ControlInfo_Base::setProtocol(protocol); }
-    virtual short getHopLimit() const override { return getTimeToLive(); }
-    virtual void setHopLimit(short hopLimit) override { setTimeToLive(hopLimit); }
 };
 
 } // namespace inet
