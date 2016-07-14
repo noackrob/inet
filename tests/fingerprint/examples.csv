@@ -237,6 +237,9 @@
 
 /examples/inet/udpburst/,            -f omnetpp.ini -c General -r 0,                1000s,           e660-6932 9649-c759/tplx
 
+/examples/inet/tunnel/,              -f omnetpp.ini -c UDPApp -r 0,                 10s,           e660-6932 347e-3397/tplx
+/examples/inet/tunnel/,              -f omnetpp.ini -c TcpApp -r 0,                 10s,           e660-6932 6f76-8110/tplx
+
 /examples/internetcloud/cloudandhosts/, -f omnetpp.ini -c simple -r 0,                 100s,            01a6-2ee6 6c2d-4d34/tplx
 /examples/internetcloud/cloudandhosts/, -f omnetpp.ini -c two_senders -r 0,            100s,            adc5-77df 405b-1a3e/tplx
 /examples/internetcloud/cloudandhosts/, -f omnetpp.ini -c ten_senders -r 0,            100s,            c5be-600b 3991-7838/tplx
